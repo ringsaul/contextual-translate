@@ -4,8 +4,6 @@
 
 **Talk to your agent as usual, and learn how to say the same thing naturally in another language.**
 
-Author: ringsaul · [MIT License](LICENSE)
-
 ## Why use it?
 
 - **Learn during everyday conversations**: Ask about code or troubleshoot a problem, and see how to express the same request in another language. The agent then continues with your task.
@@ -155,3 +153,7 @@ This skill works through instructions. It has no separate translation service an
 The per-turn behavior is an instruction, not an enforced execution hook. Cloud and remote environments need their own installation or synchronization. Language preferences and correction quality depend on the tool, model, and rules actually loaded.
 
 When reporting an issue, include the tool version, model, installation location, and a non-sensitive example of the input and actual output.
+
+---
+
+Author: ringsaul · [MIT License](LICENSE)
