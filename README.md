@@ -25,7 +25,7 @@ Replace “Spanish” with the language you want to learn. After installation, a
 
 The agent should follow the [installation guide](docs/installation.md) and `examples/`, add the selected languages and per-turn requirement to the effective rules for this skill, preserve unrelated settings, and report the scope and any reload needed.
 
-See the [installation guide](docs/installation.md) for manual installation, updates, pausing, and removal. The detailed guides and skill instructions are currently in Simplified Chinese; the request above explicitly sets English for notes and answers.
+See the [installation guide](docs/installation.md) for manual installation, updates, pausing, and removal. The guides, rule examples, and skill instructions are written in English. The request above also sets English for learning notes and answers.
 
 ## 2. Full conversation examples
 
@@ -140,12 +140,11 @@ See the [compatibility guide](docs/compatibility.md) for directories, personal v
 
 ## Further reading
 
-The detailed guides below are currently in Simplified Chinese:
+Detailed guides and skill instructions:
 
 - [Installation, per-turn setup, updates, pausing, and removal](docs/installation.md)
 - [Compatibility and official sources](docs/compatibility.md)
 - [Manual test cases](docs/testing.md)
-- [Publishing to GitHub](docs/publishing.md)
 - [Full skill instructions](SKILL.md)
 
 This skill works through instructions. It has no separate translation service and requires no additional API key for the project. The account, subscription, and network requirements of your agent or model still apply. The skill includes no data-upload scripts; requests are handled by the agent and model you use.

@@ -1,43 +1,43 @@
-# 兼容性与官方依据
+# Compatibility and official sources
 
-核对日期：2026-10-30。此页区分“官方支持加载这种结构”和“本项目实际运行测试”。版本、所选 agent/harness、权限与企业策略可能改变可用性。
+Documentation checked: 2026-10-30. This page distinguishes documented support for a skill layout from actual testing of this project. Availability may vary by version, agent or harness, permissions, and organization policy.
 
-## 兼容性表
+## Compatibility table
 
-各技能路径后都需包含 `contextual-translate/SKILL.md`。
+Each directory below must contain `contextual-translate/SKILL.md`.
 
-| 工具 | 个人技能位置 | 项目技能位置 | 调用与每轮规则 | 本项目验证 |
+| Tool | Personal skill locations | Project skill locations | Invocation and per-turn rules | Project verification |
 | --- | --- | --- | --- | --- |
-| Codex | `~/.agents/skills/` | `.agents/skills/` | `$contextual-translate`；有效的全局或项目 `AGENTS.md` | 当前本机 Codex 会话已验证 |
-| Claude Code | `~/.claude/skills/` | `.claude/skills/` | `/contextual-translate`；个人 `~/.claude/CLAUDE.md` 或项目 `CLAUDE.md` | 官方结构支持，尚未实测 |
-| Cursor | `~/.agents/skills/` 或 `~/.cursor/skills/` | `.agents/skills/` 或 `.cursor/skills/` | `/contextual-translate`；项目 `alwaysApply: true` 的 `.mdc`，个人 User Rules | 官方结构支持，尚未实测 |
-| VS Code Copilot Agent | `~/.agents/skills/` 或 `~/.copilot/skills/` | `.agents/skills/` 或 `.github/skills/` | `/contextual-translate`；项目 `.github/copilot-instructions.md`，需所选 harness 支持 | 官方结构支持，尚未实测 |
-| OpenCode | `~/.agents/skills/` 或 `~/.config/opencode/skills/` | `.agents/skills/` 或 `.opencode/skills/` | 在对话中要求使用，由 agent 加载；全局或项目 `AGENTS.md` | 官方结构支持，尚未实测 |
+| Codex | `~/.agents/skills/` | `.agents/skills/` | `$contextual-translate`; effective personal or project `AGENTS.md` | Observed in the current local Codex conversation |
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` | `/contextual-translate`; personal `~/.claude/CLAUDE.md` or project `CLAUDE.md` | Documented structure; not tested in this project |
+| Cursor | `~/.agents/skills/` or `~/.cursor/skills/` | `.agents/skills/` or `.cursor/skills/` | `/contextual-translate`; project `.mdc` with `alwaysApply: true`, or personal User Rules | Documented structure; not tested in this project |
+| VS Code Copilot Agent | `~/.agents/skills/` or `~/.copilot/skills/` | `.agents/skills/` or `.github/skills/` | `/contextual-translate`; project `.github/copilot-instructions.md`, subject to harness support | Documented structure; not tested in this project |
+| OpenCode | `~/.agents/skills/` or `~/.config/opencode/skills/` | `.agents/skills/` or `.opencode/skills/` | Ask the agent to load the skill; personal or project `AGENTS.md` | Documented structure; not tested in this project |
 
-避免在同一工具扫描的多个位置重复安装。工具只扫描某个目录时，也不会因为另一工具已安装就自动拥有它。
+Avoid duplicate installations in directories scanned by the same tool. Installing for one tool does not automatically make the skill available to a tool that scans different locations.
 
-## 差异与边界
+## Differences and limits
 
-可移植核心是 `SKILL.md` 的 `name`、`description` 与 Markdown 正文。本项目没有绑定某个工具的必需脚本、SDK 或权限配置。MIT 许可允许按工具需要修改分发。
+The portable core is the `name`, `description`, and Markdown body in `SKILL.md`. The skill has no required tool-specific script, SDK, or permission configuration. The MIT license permits adapting and redistributing it for other tools.
 
-`agents/openai.yaml` 属于 Codex 元数据，不应假定其他工具读取其策略。各工具的发现、自动选择和每轮规则需要分别设置。
+`agents/openai.yaml` is Codex metadata. Do not assume other tools read its policy. Configure discovery, automatic selection, and per-turn rules for each tool separately.
 
-技能可按需选择不保证每轮调用。常驻规则能明确要求，但不等于确定执行的程序钩子；翻译、纠错和格式遵循也受模型能力影响。
+Availability for automatic selection does not guarantee use on every turn. Persistent rules express the requirement but are not execution hooks. Translation, corrections, and formatting also depend on the model.
 
-Cursor 官方文档说明，本机个人技能不会自动复制到云端 agent、远程 SSH 会话或自托管 worker。其他工具的远程执行环境也需单独确认，不能将本机效果当作云端验收。
+Cursor's documentation notes that personal skills are not automatically copied to cloud agents, remote SSH sessions, or self-hosted workers. Check other tools' remote environments separately as well; local behavior does not establish cloud compatibility.
 
-## 非原生工具
+## Tools without native skill support
 
-若工具允许自定义系统指令或长期规则，可将 `SKILL.md` frontmatter 后的正文复制到它实际支持的入口。只把文件放在工作目录不一定生效。
+If a tool accepts custom system instructions or persistent rules, you can manually copy the body of `SKILL.md`, excluding its frontmatter, into a supported configuration entry. Simply placing a file in the working directory may have no effect.
 
-这种方式是手动迁移，不提供技能发现、调用命令或每轮使用保证，需按[测试用例](testing.md)验证，不能标记为原生支持。
+This is a manual adaptation, without native discovery, invocation commands, or a guarantee of per-turn use. Verify it with the [manual test cases](testing.md) rather than claiming native support.
 
-## 官方依据
+## Official sources
 
-以下为本次实际查阅的官方页面。兼容性会随版本变化，发布新版本前建议重新核对。
+These sources were checked for the documented installation layouts. Compatibility can change with tool versions.
 
-- OpenAI Docs：[Codex Skills](https://developers.openai.com/codex/skills/)、[AGENTS.md](https://developers.openai.com/codex/guides/agents-md/)。
-- Anthropic：[Claude Code Skills](https://code.claude.com/docs/en/skills)、[CLAUDE.md 与指令加载](https://code.claude.com/docs/en/memory)。
-- Cursor：[Skills](https://cursor.com/docs/context/skills)、[Rules](https://cursor.com/docs/context/rules)。
-- VS Code：[Agent Skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)、[Custom Instructions](https://code.visualstudio.com/docs/copilot/customization/custom-instructions)。
-- OpenCode：[Skills](https://opencode.ai/docs/skills/)、[Rules](https://opencode.ai/docs/rules/)。
+- OpenAI Docs: [Codex Skills](https://developers.openai.com/codex/skills/), [AGENTS.md](https://developers.openai.com/codex/guides/agents-md/).
+- Anthropic: [Claude Code Skills](https://code.claude.com/docs/en/skills), [CLAUDE.md and instruction loading](https://code.claude.com/docs/en/memory).
+- Cursor: [Skills](https://cursor.com/docs/context/skills), [Rules](https://cursor.com/docs/context/rules).
+- VS Code: [Agent Skills](https://code.visualstudio.com/docs/agent-customization/agent-skills), [Custom Instructions](https://code.visualstudio.com/docs/copilot/customization/custom-instructions).
+- OpenCode: [Skills](https://opencode.ai/docs/skills/), [Rules](https://opencode.ai/docs/rules/).

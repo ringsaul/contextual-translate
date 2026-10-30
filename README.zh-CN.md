@@ -25,7 +25,7 @@
 
 Agent 安装时应参考 [安装说明](docs/installation.md) 和 `examples/`，将指定语言与每轮使用要求写入本技能对应的有效规则区块，保留其他配置，并说明生效范围与是否需要重载。
 
-手动安装、更新和卸载见[安装说明](docs/installation.md)。
+手动安装、更新和卸载见[安装说明](docs/installation.md)。详细文档、配置示例及技能规则统一使用英文。
 
 
 
@@ -149,7 +149,6 @@ Q 不是把原句原样复述；N 也不是问题的答案。两者都保留你�
 - [安装、每轮配置、更新、暂停与卸载](docs/installation.md)
 - [兼容性与官方依据](docs/compatibility.md)
 - [手动测试用例](docs/testing.md)
-- [GitHub 发布步骤](docs/publishing.md)
 - [完整技能规则](SKILL.md)
 
 这是通过指令工作的技能，没有独立翻译服务，不需为项目单独配置 API 密钥；运行它的 Agent 或模型自身的账号、订阅及网络要求仍适用。技能不包含上传数据的脚本，请求仍由所用 Agent 与模型处理。

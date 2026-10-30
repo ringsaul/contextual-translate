@@ -1,40 +1,40 @@
-# 安装、更新与卸载
+# Installation, updates, and removal
 
-## 先让 Agent 帮你安装
+## Ask your agent to install it
 
-优先使用 [README 中的一条消息安装方式](../README.zh-CN.md)。将仓库地址交给 Agent，让它读取项目说明，按当前工具支持的位置安装，并配置每轮规则。需要指定默认翻译语言时，同时说明目标语言、解释语言和正式回答语言。
+Start with the [one-message installation request in the README](../README.md). Give your agent the repository URL and ask it to follow the project instructions, install into a supported location, and configure use on every turn. Specify the target language, learning-note language, and answer language separately.
 
-这是一条交给 Agent 执行的请求，不是项目自带的一键安装程序。网络、文件权限或配置入口受限时，Agent 应说明剩余手动步骤；完成后报告安装位置、生效范围和重载方式。以下命令供需要手动安装、检查或维护时使用。
+This is a request for your agent to carry out, not a bundled installer. If network access, file permissions, or settings prevent completion, the agent should explain the remaining manual steps. It should report the installation path, scope, and reload requirements.
 
-以下 shell 命令适用于 macOS/Linux。Windows 可将完整项目文件夹放到对应用户技能目录，例如 `%USERPROFILE%\.agents\skills\contextual-translate`。各工具实际支持的位置见[兼容性表](compatibility.md)。
+The shell commands below are for macOS/Linux. On Windows, place the full project folder in the appropriate user skill directory, for example `%USERPROFILE%\.agents\skills\contextual-translate`. See the [compatibility guide](compatibility.md) for each tool's supported locations.
 
-## 个人安装
+## Personal installation
 
-适用于当前官方文档支持共享个人目录的 Codex、Cursor、VS Code Copilot 和 OpenCode。首次安装需要 Git：
+For tools with documented support for the shared personal skills directory, including Codex, Cursor, VS Code Copilot, and OpenCode, install with Git:
 
 ```sh
 mkdir -p "$HOME/.agents/skills"
-git clone https://github.com/YOUR_GITHUB_NAME/contextual-translate.git \
+git clone https://github.com/ringsaul/contextual-translate.git \
   "$HOME/.agents/skills/contextual-translate"
 ```
 
-替换 `YOUR_GITHUB_NAME` 为实际所有者；仓库改名时也修改 URL。目标目录必须不存在，已有安装按更新章节处理。安装后应能看到 `~/.agents/skills/contextual-translate/SKILL.md`。
+The destination must not already exist. For an existing installation, follow the update instructions below. After installation, check that `~/.agents/skills/contextual-translate/SKILL.md` exists.
 
-Claude Code 使用其官方个人技能目录：
+For Claude Code, use its personal skills directory instead:
 
 ```sh
 mkdir -p "$HOME/.claude/skills"
-git clone https://github.com/YOUR_GITHUB_NAME/contextual-translate.git \
+git clone https://github.com/ringsaul/contextual-translate.git \
   "$HOME/.claude/skills/contextual-translate"
 ```
 
-只有选择 Claude Code 安装方式时才执行后一组。同一工具可能发现多个兼容目录，不要在它同时扫描的位置重复安装同名技能。
+Choose the installation appropriate to your tool. Do not install the same skill into multiple directories scanned by that tool.
 
-不使用 Git 时，可下载仓库 ZIP、解压后把完整项目文件夹改名为 `contextual-translate`，放入对应目录。不要额外嵌套一层 `contextual-translate-main`。
+Without Git, download and extract the repository ZIP, rename the extracted project folder to `contextual-translate`, and place it in the appropriate directory. Avoid an extra nested `contextual-translate-main` folder.
 
-## 项目安装
+## Project installation
 
-个人安装对本机多个项目可见，项目安装便于团队随业务项目共享。已完成上述共享个人安装时，可在目标业务项目根目录执行以下首次复制命令：
+A personal installation is visible across local projects. A project installation can be shared with a team through its working repository. If you already have the shared personal installation above, run these commands from the destination project's root:
 
 ```sh
 mkdir -p .agents/skills/contextual-translate/agents
@@ -46,54 +46,56 @@ cp "$HOME/.agents/skills/contextual-translate/agents/openai.yaml" \
   .agents/skills/contextual-translate/agents/openai.yaml
 ```
 
-先确认目标位置没有自己的修改。复制只包含运行规则、Codex 元数据与许可证，不带嵌套 `.git`。若准备长期采用项目安装，验证后移出个人副本，避免同名重复发现。
+Check the destination for your own changes before copying. This copies only the skill instructions, Codex metadata, and license, without an embedded `.git` directory. If you plan to use only the project installation, move the personal copy out of discovery after verifying the project copy, to avoid duplicate discovery.
 
-Claude Code 可按同样结构复制到 `.claude/skills/contextual-translate/`；其他位置见兼容性表。Windows 用户可手动完成相同复制。
+For Claude Code, use the same structure under `.claude/skills/contextual-translate/`. See the compatibility guide for other locations. Windows users can copy these files manually.
 
-## 每轮配置
+## Configure use on every turn
 
-安装、允许自动选择、要求每轮使用是不同步骤。`agents/openai.yaml` 允许 Codex 自动选择，但其他工具不一定读取它，自动选择也不保证每轮执行。
+Installation, automatic selection, and a requirement to use the skill on every turn are separate steps. `agents/openai.yaml` allows implicit invocation in Codex; other tools may not read it, and automatic selection does not guarantee use on every turn.
 
-| 工具 | 配置方式 | 示例 |
+| Tool | Where to add the rule | Example |
 | --- | --- | --- |
-| Codex | 追加到有效的全局或项目 `AGENTS.md` | [个人安装示例](../examples/codex-global.md) |
-| Claude Code | 追加到 `~/.claude/CLAUDE.md` | [个人安装示例](../examples/claude-global.md) |
-| Cursor | 保存为项目 `.cursor/rules/contextual-translate.mdc`；全局可把等价指令加入 User Rules | [项目规则](../examples/cursor-project.mdc) |
-| VS Code Copilot | 追加到项目 `.github/copilot-instructions.md` | [项目规则](../examples/copilot-project.md) |
-| OpenCode | 追加到 `~/.config/opencode/AGENTS.md` | [个人安装示例](../examples/opencode-global.md) |
+| Codex | Effective personal or project `AGENTS.md` | [Personal rule](../examples/codex-global.md) |
+| Claude Code | `~/.claude/CLAUDE.md` | [Personal rule](../examples/claude-global.md) |
+| Cursor | Project `.cursor/rules/contextual-translate.mdc`; use equivalent User Rules for personal scope | [Project rule](../examples/cursor-project.mdc) |
+| VS Code Copilot | Project `.github/copilot-instructions.md` | [Project rule](../examples/copilot-project.md) |
+| OpenCode | `~/.config/opencode/AGENTS.md` | [Personal rule](../examples/opencode-global.md) |
 
-示例路径分别对应个人或项目安装，换用另一种方式时改成实际 `SKILL.md` 路径。项目副本优先使用相对路径，不要提交本机用户目录。
+Each example assumes a particular installation location. Adjust its `SKILL.md` path if you choose another location. Use relative paths for project copies rather than committing a local user directory.
 
-这些是待复制的配置示例，仅放在本仓库 `examples/` 中不会自动生效。已有规则文件只追加对应标记区块，不要整文件覆盖或重复添加。
+The files in `examples/` are templates: leaving them in this repository does not activate them. Append only the marked block to an existing rule file; do not replace the whole file or add the same block twice.
 
-Codex 默认全局目录为 `~/.codex`，自定义 `CODEX_HOME` 时使用对应目录。有非空 `AGENTS.override.md` 时优先读取它，不能只改未被加载的 `AGENTS.md`。新增区块放在其他工具托管区之外。
+For Codex, the default global configuration directory is `~/.codex`; use the configured directory when `CODEX_HOME` is customized. A nonempty `AGENTS.override.md` takes precedence over `AGENTS.md` in the same directory. Update the file that is actually loaded, and keep the skill's block outside sections managed by other tools.
 
-重新加载技能与规则；已有会话可能需重启后再测。每轮规则仍受用户本轮明确要求、严格格式和工具权限约束。
+Specify your preferred languages in the same effective rule block. For example, ask your agent to add: “Translate my requests into Spanish; keep learning notes and answers in English.” The skill's fallback for notes and answers is Simplified Chinese unless overridden.
 
-## 更新
+Reload skills and rules. Existing conversations may need a restart before testing. Per-turn instructions still yield to explicit user requests, strict output formats, and tool permissions.
 
-Git 安装先查看本地修改，再更新：
+## Updates
+
+For a Git installation, inspect local changes before updating:
 
 ```sh
 git -C "$HOME/.agents/skills/contextual-translate" status --short
 git -C "$HOME/.agents/skills/contextual-translate" pull --ff-only
 ```
 
-其他安装方式请替换路径。有本地修改或冲突时先保存改动，不使用强制重置。更新后重新加载技能。
+Adjust the path for other installation locations. Preserve local changes and resolve conflicts rather than using a forced reset. Reload the skill afterward.
 
-ZIP 或复制安装没有 `.git`，不能 `git pull`；先备份旧目录，再用新的完整文件替换并保留个性化修改。项目级副本也要单独更新，个人安装更新不会自动同步到已复制文件。
+ZIP and copied installations have no `.git` directory, so `git pull` does not apply. Back up the old directory, replace it with the updated files, and preserve your customizations. Project copies need their own update; updating a personal installation does not synchronize copies automatically.
 
-常驻规则只引用技能时，通常无需每次改规则。新版改变配置格式时，再核对新示例与自己的标记区块。
+A rule block that only references the skill usually needs no change for routine updates. If a new version changes configuration, compare its examples with your own marked block.
 
-## 暂停
+## Pause
 
-临时跳过一轮，直接说“这次跳过翻译”。暂停后续轮次可说“接下来暂停翻译”，恢复时明确要求恢复。
+To skip one turn, say “Skip translation this time.” To pause later turns, say “Pause translation from now on.” Explicitly ask to resume when needed.
 
-长期暂停或卸载，应移出技能并删除其常驻规则。只移除规则，技能仍可能被模型选中；只移出技能而保留规则，会让规则指向不存在的文件。
+For a persistent pause or removal, move the skill out of discovery and remove its rule block. Removing only the rule still allows the model to select the skill; removing only the skill leaves a rule pointing to a missing file.
 
-## 卸载
+## Uninstall
 
-卸载同时处理技能与规则。以下示例移出发现目录并保留备份，不立即删除个性化修改：
+Remove both the skill and its rules. This example moves the skill out of discovery while retaining a backup:
 
 ```sh
 skill_path="$HOME/.agents/skills/contextual-translate"
@@ -102,27 +104,27 @@ mkdir -p "$HOME/.agents/skills-disabled"
 mv "$skill_path" "$disabled_path"
 ```
 
-其他工具或项目安装必须把 `skill_path` 改成实际目录，有多份副本时分别处理。共享个人目录可能被多个工具使用，移出后它们都会失去该副本。
+Adjust `skill_path` for the actual tool or project installation. Handle each copy separately. A shared personal installation may be used by multiple tools, all of which will lose access to that copy when it is moved.
 
-然后编辑曾经配置的 `AGENTS.md`、`CLAUDE.md`、Cursor User Rules 或 Copilot instructions，只删除以下标记之间及标记本身的本技能区块：
+Edit the `AGENTS.md`, `CLAUDE.md`, Cursor User Rules, or Copilot instructions where you added the rule. Remove only the skill's block, including these markers:
 
 ```text
 <!-- contextual-translate-every-turn:start -->
 <!-- contextual-translate-every-turn:end -->
 ```
 
-Cursor 若使用专用 `.cursor/rules/contextual-translate.mdc`，将该文件一起移出 `.cursor/rules/`。保留其他配置。
+If Cursor uses a dedicated `.cursor/rules/contextual-translate.mdc`, move that file out of `.cursor/rules/` too. Preserve unrelated settings.
 
-重启或新开会话验证：普通问题不应再自动附加本技能 Q/N。已有会话可能仍记得此前用户要求，必要时明确取消偏好。
+Restart or open a new conversation and send an ordinary question. The skill should no longer add Q/N automatically. Existing conversations may retain earlier user preferences; explicitly cancel them if needed.
 
-需要彻底删除时，确认不再需要备份后删除 `disabled_path` 对应文件夹；这会永久删除本地修改，卸载本身不要求立即清理备份。恢复时把备份移回原安装位置，并重新加入规则，先确认原路径没有新安装。
+Delete the backup only when you no longer need it; deletion permanently removes local customizations. To restore, first check that the original destination has no new installation, then move the backup back and restore the rule block.
 
-## 常见问题
+## Troubleshooting
 
-**找不到技能**：检查目录层级、`SKILL.md` 文件名、frontmatter 名称与工具支持位置，重新加载技能列表。名称应为 `contextual-translate`。
+**Skill not found:** Check the directory nesting, `SKILL.md` filename, frontmatter name, and supported locations, then reload the skill list. The skill name should be `contextual-translate`.
 
-**显式调用有效，每轮不生效**：确认常驻规则确实被读取、路径有效，且未被更近的规则或用户明确要求覆盖。
+**Explicit invocation works, but not every turn:** Check whether the persistent rule is actually loaded, its path is valid, and no closer rule or explicit user instruction overrides it.
 
-**重复技能**：检查个人与项目目录是否同时安装，以及工具是否扫描了多个兼容路径。
+**Duplicate skills:** Check personal and project installations, including multiple compatible directories scanned by the tool.
 
-**本机有效，远程无效**：个人技能通常不会自动传到另一台机器。将项目技能提交到业务仓库，或按工具支持的方式同步到对应环境。
+**Works locally, but not remotely:** Personal skills do not necessarily transfer to another machine. Share a project copy with the team or synchronize it using the tool's supported mechanism.

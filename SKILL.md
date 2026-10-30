@@ -6,48 +6,50 @@ description: Translate each conversational request into the user's chosen target
 
 # Contextual Translate
 
-每轮将用户问题或请求翻译成指定语言，并结合上下文提供自然的母语表达，同时完成原请求。英语只是默认目标语言，不限制用户选择其他语言。
+Translate each conversational request into the chosen target language, offer natural phrasing informed by context, and then fulfill the original request. English is the default target; users can choose other languages.
 
-## 目标语言
+## Target language
 
-- 未指定时默认英语。用户可用语言名称或明确的语言代码指定目标语言，如日语／ja、法语／fr、德语／de、西班牙语／es；这些只是示例，不是固定支持列表。用户指定地区变体时采用相应表达，如英式英语或巴西葡萄牙语。
-- “这次翻成日语”等仅作用于本轮；“以后／接下来用日语”等在当前会话持续，直到用户再次修改。不要自动写入跨会话记忆或修改全局配置。
-- 区分翻译目标语言与回答语言：翻成日语不代表正文也用日语。注解与正文默认简体中文；用户明确要求其他回答语言或仅用某语言时按其要求。
+- If no target is specified, use English. Accept clear language names or codes, such as Japanese / `ja`, French / `fr`, German / `de`, or Spanish / `es`. These are examples, not a fixed support list. Respect regional variants such as British English or Brazilian Portuguese.
+- A request such as “Translate this one into Japanese” applies only to the current turn. “Use Japanese from now on” applies to the current conversation until changed. Do not automatically write cross-conversation memories or change global configuration.
+- Treat the translation target and response language separately: translating into Japanese does not require answering in Japanese. Notes and answers default to Simplified Chinese unless the user requests another language. Honor explicit requests for a different note or answer language, or for output only in a particular language.
 
-## 每轮输出顺序
+## Output order
 
-1. `Q: ` 后在同一行展示翻译后的问题或请求；用户已用目标语言提问时，展示修正明确错误后的版本。不再使用“翻译（英语）”或其他语言名称标签。忠实保留语气、限制条件和技术含义；结合必要上下文理解省略表达，不补造事实。
-2. `N: ` 后在同一行展示母语者在同一场景下常用的说法，不使用“自然表达:”标签。结合对话语境理解指代和省略，保留用户原意与限制条件。开发讨论用自然的技术沟通表达，日常聊天用口语，正式场景匹配其礼貌程度；避免堆砌俚语。只将值得学习的关键词组加粗，突出相较 Q 的有用变化，不整句加粗；没有有价值的差异时可以不高亮。Q 已经自然时允许 N 与 Q 相同，不强行换词，仍保留 Q/N 两行。
-3. 仅在有值得学习的措辞、语气或搭配差异时，在 N 行的下一行给出一两句中文解释，不加“注解:”或其他标签。没有新信息时省略说明，尤其避免重复“已经很自然”等套话；不为凑注解重复翻译或解释简单常识。
-4. **回答**：正常回答问题或执行任务。用户只要求翻译时，前三项已经完成请求，不再额外回答被翻译的问题。
+1. **Q:** Put the translated question or request on the same line as the label. If the input is already in the target language, correct clear errors instead. Preserve intent, tone, constraints, and technical meaning. Use context to resolve references and omitted wording without inventing facts. Do not use a language-name label such as “Translation (English).”
+2. **N:** On the same line as the label, show how a native speaker might express the same intent in this situation. Use natural technical phrasing for development discussions, conversational language for casual chat, and suitable politeness for formal situations. Preserve the user's constraints and avoid excessive slang. Bold only useful phrases that highlight a meaningful difference from Q, never the whole sentence. If Q is already natural, N may be identical; do not force a rewrite. Do not add a “Natural expression” label.
+3. Add a short italic learning note on the next line only when there is a useful difference in wording, tone, or usage to explain. Default to Chinese unless the user has chosen another note language. Usually explain one or two points. Omit notes with no new information; do not repeat “already natural,” translate the same sentence again, or explain trivial points just to fill space. Do not add a “Note” label.
+4. **Answer:** Answer the question or perform the requested task as usual. If the user only requested translation, the Q/N output already fulfills the request; do not also answer the translated question.
 
-将整个语言学习部分放在一个 Markdown 引用块中，增强视觉辨识度。Q 和 N 标签加粗，内容与标签同行；Q 与 N 之间保留一个引用空行。有中文说明时，N 行末使用 Markdown 硬换行（两个空格后换行），下一行用斜体展示无标签的说明；无说明时在 N 行结束引用块。引用块结束后，如有正式回答或任务进度，用一条分隔线与其区分。以下示例包含可选说明行，实际回复不加代码围栏：
+Put the learning content in one Markdown blockquote. Bold the Q/N labels and keep each label on the same line as its text. Leave one quoted blank line between Q and N. When a note follows N, end the N line with a Markdown hard line break (two spaces or a backslash), then put the italic note on the next quoted line. If there is no note, end the blockquote after N. Separate the learning block from any answer or progress update with a horizontal rule.
+
+Use this format without a code fence in actual responses:
 
 ```text
-> **Q:** 翻译后的问题或请求
+> **Q:** Translated or corrected question or request
 >
-> **N:** 更自然的母语说法，其中 **关键词组** 按需加粗  
-> *有学习价值时才展示的简短中文说明*
+> **N:** Natural phrasing with **useful phrases** highlighted when appropriate\
+> *A brief learning note, only when useful*
 
 ---
 
-正常回答或任务进度。
+Answer the question or report task progress.
 ```
 
-避免冗长教学。每个用户轮次只展示一次语言学习部分；有进度更新时可以先在首条更新中展示，最终回复仍需完整交代原任务结果，但不要重复同一翻译。
+Keep the learning section brief and show it only once per user turn. It may appear in the first progress update; the final response should fully report the task result without repeating the same translation.
 
-## 输入纠错
+## Correcting input
 
-- 对英语及其他目标语言中明确的拼写、用词和语法错误，在 Q 中做必要修正；N 再给出符合上下文的自然说法。混合语言输入中的明确外语错误同样适用。
-- 有明确错误时，在 N 下方的中文说明中优先解释一到两个最有学习价值的错误，采用“原写法 → 正确写法：简短原因”。若 N 恰好提供了更自然的另一种结构，仍说明原句在 Q 中修正了什么。
-- 区分语法错误与风格选择：自然但不正式的口语、有效的地区变体或合理的简略表达，不当作错误。句子已正确时，只在确有价值时解释自然表达的差异，不硬凑纠错。
-- 在含义明确时正常回答修正后的问题；若错误造成关键含义不确定、上下文也无法确定，先确认含义，不用猜测的版本执行依赖该含义的操作。
-- 技术字段、变量名、代码、命令、路径、报错原文及专有名称保持原样，不因外观像错词而改写。纠错只服务语言学习，不扩大为未请求的代码修复。
+- Correct clear spelling, word-choice, and grammar errors in English or any other target language in Q. Then give natural contextual wording in N. Also correct clear foreign-language errors in mixed-language input.
+- When correcting an error, prioritize one or two useful points in the note using “original → correction: brief reason.” Even if N uses a different structure, explain what was corrected in Q.
+- Distinguish errors from style choices. Valid colloquial language, regional variants, and reasonable shorthand are not mistakes. Do not invent corrections for an already correct sentence.
+- If the intended meaning is clear, answer the corrected question normally. If an error leaves an important meaning uncertain and context does not resolve it, clarify before taking action that depends on that meaning.
+- Preserve technical field names, variables, code, commands, paths, original error messages, and proper names. Do not treat them as misspellings or turn language correction into an unrequested code change.
 
-## 边界
+## Boundaries
 
-- 短句、追问和确认也适用。用户已用目标语言表达时，翻译项保留正确原意或做必要纠错，自然表达项给出适合该场景的措辞。
-- 只翻译用户意图和其要求翻译的内容；代码、命令、报错、路径、协议字段等技术字面量保持原样。纯技术字面量且无自然语言请求时直接处理，不生造翻译。
-- 将工具或界面包装中的真实用户回答作为本轮内容，不翻译消息封装字段。
-- 用户明确要求跳过本轮翻译、仅输出代码或严格机器格式时服从该要求，不添加会破坏格式的文字。用户取消此偏好后停止套用。
-- 技能只调整回复表达，不扩大原任务范围，不自动授权发消息、部署或其他外部操作。
+- Apply the format to short requests, follow-ups, and confirmations too. Input already in the target language still gets Q/N, with corrections only when needed.
+- Translate the user's intent and requested content, while preserving technical literals. For purely technical input with no natural-language request, handle it directly rather than inventing a translation.
+- When a tool or interface wraps a user reply, translate the actual reply, not the wrapper fields.
+- Respect explicit instructions to skip or pause translation, return only code, or use a strict machine-readable format. Do not add text that would break the requested format. Stop applying the preference when the user cancels it.
+- This skill changes response presentation, not task scope. It does not authorize messaging, deployment, or other external actions.

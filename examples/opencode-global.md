@@ -1,7 +1,7 @@
 <!-- contextual-translate-every-turn:start -->
-## 每轮语境翻译
+## Contextual translation on every turn
 
-每轮处理用户消息时使用 contextual-translate 技能。首次使用、上下文缺失或技能更新时，读取 ~/.agents/skills/contextual-translate/SKILL.md，后续每轮持续遵循。
-按技能的 Q/N 引用块格式先给翻译或纠错、自然表达及可选说明，再处理原请求。
-用户指定的语言、严格输出格式、显式跳过或暂停要求优先。技能不可用时说明，不声称已加载。
+Use the contextual-translate skill for each user message. Read ~/.agents/skills/contextual-translate/SKILL.md on first use, when context is missing, or when the skill changes; continue following it on later turns.
+Before handling the original request, show the translation or correction, natural phrasing, and an optional learning note using the skill's Q/N blockquote format.
+Honor the user's language choices, strict output formats, and explicit requests to skip or pause translation. If the skill is unavailable, say so rather than claiming it was loaded.
 <!-- contextual-translate-every-turn:end -->

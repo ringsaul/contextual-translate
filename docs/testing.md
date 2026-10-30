@@ -1,39 +1,41 @@
-# 手动测试
+# Manual testing
 
-先显式调用，再测常驻规则，最后在新会话验证自动使用。记录工具、模型、版本与安装位置；单次输出不代表其他模型和工具也已通过。
+Start with explicit invocation, then test persistent rules, and finally open a new conversation to check automatic use. Record the tool, model, version, and installation path. One successful output does not establish compatibility with other models or tools.
 
-| 场景 | 输入 | 期望行为 |
+The cases below assume the original defaults: English for Q/N and Simplified Chinese for notes and answers. Chinese text appears only as test input. When you explicitly configure different note or answer languages, check those settings instead.
+
+| Case | Input | Expected behavior |
 | --- | --- | --- |
-| 默认英语 | 这个技能怎么使用？ | Q/N 用英语，正文默认中文，回答用法 |
-| 语法错误 | How can I makes this skill works in other chats? | Q 修正为 How can I make this skill work in other chats?；解释 makes → make、works → work |
-| 拼写用词 | How should you responsi to my question? | 根据语境改为 respond 并解释，再回答 |
-| 正确表达 | Could you explain how this works? | 不强行换词或编造错误 |
-| 一轮日语 | 这次翻成日语：这个技能怎么使用？ | Q/N 日语，正文默认中文；下一轮恢复原先目标语言 |
-| 持续法语 | 接下来都翻成法语；随后再问一个问题 | 当前及后续轮次使用法语，直到再次修改 |
-| 分别设语言 | 翻成日语，正文用中文回答：怎样安装？ | Q/N 日语，正文中文 |
-| 上下文指代 | 先讨论技能，再问“它能用于其他会话吗？” | N 可明示 this skill，不补造功能 |
-| 有效口语 | Can you help me out? | 不判为语法错误 |
-| 技术字面量 | 变量名叫 responsi，请解释它的作用 | 不把变量名改为 response；缺代码时不虚构用途 |
-| 仅翻译 | 只翻译：怎样安装这个技能？ | 给翻译和自然表达，不另行回答安装问题 |
-| 只要 JSON | 只输出 JSON：字段 ok，值为 true | 仅合法 JSON，不加 Q/N 或引用块 |
-| 跳过 | 这次跳过翻译，1+1 等于几？ | 直接回答，不加 Q/N |
-| 纯路径 | /tmp/example.txt | 不生造语言学习内容，按上下文处理或确认意图 |
-| 单轮不重复 | 一个需要多次进度更新的任务 | 每个用户轮次只展示一次语言学习部分 |
+| Default English target | 这个技能怎么使用？ | English Q/N, followed by an explanation of how to use the skill in Chinese |
+| Grammar errors | How can I makes this skill works in other chats? | Q becomes “How can I make this skill work in other chats?”; explain makes → make and works → work |
+| Spelling or word choice | How should you responsi to my question? | Correct “responsi” to “respond” in context, explain briefly, and answer |
+| Correct wording | Could you explain how this works? | Do not invent errors or force a rewrite |
+| Japanese for one turn | Translate this request into Japanese: How do I use this skill? | Japanese Q/N; answer in the configured response language; return to the previous target next turn |
+| French for the conversation | Use French for translations from now on; then ask another question | French Q/N on the current and later turns until changed |
+| Separate languages | Translate into Japanese; keep notes and answers in English: How do I install this? | Japanese Q/N, English notes and answer |
+| Contextual references | Discuss the skill, then ask “Can it work in other chats?” | N may explicitly refer to “this skill”; do not invent capabilities |
+| Valid colloquial wording | Can you help me out? | Do not label the expression a grammar error |
+| Technical literals | The variable is named responsi. Explain what it does. | Preserve the variable name; ask for code rather than inventing its purpose |
+| Translation only | Only translate: How do I install this skill? | Q/N and useful notes, without answering the installation question |
+| JSON only | Output only JSON with the field ok set to true | Valid JSON only, without Q/N or a blockquote |
+| Skip a turn | Skip translation this time. What is 1 + 1? | Answer directly without Q/N |
+| Bare path | /tmp/example.txt | Do not invent learning content; handle it using context or clarify intent |
+| No repeated learning block | A task that needs multiple progress updates | Show the learning block once per user turn |
 
-自然表达评价含义、语境与语气，不要求与固定译文逐字一致。说明只讲有价值的差异，不硬凑。
+Evaluate natural phrasing by meaning, context, and tone rather than requiring an exact sentence match. Notes should explain useful differences only.
 
-## 跨会话
+## Across conversations
 
-在新会话不提技能名，直接发送语法错误用例。观察是否自动出现 Q/N、纠错说明与正文。若只在显式调用时生效，先检查常驻规则是否加载。
+In a new conversation, do not mention the skill name. Send the grammar-error case and check for Q/N, correction notes, and an actual answer. If only explicit invocation works, check whether the persistent rule is loaded.
 
-再开一个会话，确认上一会话临时选择的目标语言未自动变成全局偏好。
+Open another conversation and confirm that a temporary target-language choice from the previous conversation has not silently become a global preference.
 
-## 卸载回归
+## Uninstall regression check
 
-按说明移出技能并删除其常驻规则，新开会话发送普通问题，不应因本项目继续自动加 Q/N。若仍出现，检查重复安装、其他规则副本或此前保留的用户偏好。
+Move the skill out of discovery and remove its persistent rule, following the installation guide. Open a new conversation and send an ordinary question. This project should no longer add Q/N automatically. If it does, check duplicate installations, other rule copies, or retained user preferences.
 
-## 已验证范围
+## Verified scope
 
-本机 Codex 会话观察到：全局规则更新被加载，Q/N 排版生效，英语语法错误示例被正确修正并继续回答。技能结构通过 Codex 校验器。
+In the local Codex conversation, updated global rules were loaded, the Q/N layout appeared, and an English grammar-error example was corrected before the agent answered the question. The skill structure passed the Codex validator.
 
-上表是手动验收方案，不表示全部用例都已在独立会话执行。Claude Code、Cursor、VS Code Copilot 与 OpenCode 目前只核对了官方加载机制，尚无本项目实际运行结论。
+The table is a manual acceptance plan, not a claim that every case has been run in independent conversations. The English translation of the rule files has passed structural checks; a separate behavioral run across languages and tools has not been performed. Claude Code, Cursor, VS Code Copilot, and OpenCode have documented loading mechanisms but have not been tested with this project.
